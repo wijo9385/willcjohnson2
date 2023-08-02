@@ -5,14 +5,21 @@ import {
     useLoaderData
 } from "@remix-run/react";
 
+import Collapsible from 'react-collapsible';
+
+import {
+    useState
+} from 'react';
+
 export const meta: V2_MetaFunction = () => {
     return [
-        { title: "Will C. Johnson - Blog" },
+        { title: "Will C. Johnson" },
         { name: "description", content: "Welcome to Remix!" },
     ];
 };
 
 export default function Resume() {
+    const [open, setOpen] = useState(false);
     return (
         <>
             <div className="hidden lg:flex fixed left-0 top-0 h-screen flex flex-col justify-center">
@@ -36,7 +43,7 @@ export default function Resume() {
                 <div className="mx-auto max-w-5xl px-2 sm:px-6 lg:px-8">
                     <div className="relative flex h-16 items-center justify-between">
                         <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-                            <button type="button" className="inline-flex items-center justify-center rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+                            <button onClick={() => { setOpen(!open) }} type="button" className="inline-flex items-center justify-center rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
                                 <span className="sr-only">Open main menu</span>
                                 <svg className="block h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
@@ -58,19 +65,21 @@ export default function Resume() {
                                 <div className="flex space-x-4">
                                     <Link to="/posts" className="text-gray-700 hover:bg-gray-300 rounded-md px-3 py-2 text-sm font-medium">Blog</Link>
                                     <Link to="/resume" className="text-gray-700 bg-gray-300 rounded-md px-3 py-2 text-sm font-medium">Resume</Link>
-                                    <a href="#" className="text-gray-700 hover:bg-gray-300 rounded-md px-3 py-2 text-sm font-medium">Portfolio</a>
+                                    <Link to="/portfolio" className="text-gray-700 hover:bg-gray-300 rounded-md px-3 py-2 text-sm font-medium">Portfolio</Link>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div className="sm:hidden" id="mobile-menu">
-                    <div className="space-y-1 px-2 pb-3 pt-2">
-                        <Link to="/posts" className="text-gray-700 hover:bg-gray-300 block rounded-md px-3 py-2 text-sm font-medium">Blog</Link>
-                        <Link to="/resume" className="text-gray-700 bg-gray-300 rounded-md px-3 py-2 text-sm font-medium">Resume</Link>
-                        <a href="#" className="text-gray-700 hover:bg-gray-300 block rounded-md px-3 py-2 text-sm font-medium">Portfolio</a>
+                <Collapsible trigger="" open={open}>
+                    <div className="sm:hidden" id="mobile-menu">
+                        <div className="space-y-1 px-2 pb-3 pt-2">
+                            <Link to="/posts" className="text-gray-700 hover:bg-gray-300 rounded-md px-3 py-2 text-sm font-medium">Blog</Link>
+                            <Link to="/resume" className="text-gray-700 hover:bg-gray-300 block rounded-md px-3 py-2 text-sm font-medium">Resume</Link>
+                            <Link to="/portfolio" className="text-gray-700 hover:bg-gray-300 block rounded-md px-3 py-2 text-sm font-medium">Portfolio</Link>
+                        </div>
                     </div>
-                </div>
+                </Collapsible>
             </nav>
             <div className="flex flex-col mx-auto max-w-5xl px-2 sm:px-6 lg:px-8">
                 <div className="flex flex-col sm:flex-row justify-center">
@@ -88,15 +97,15 @@ export default function Resume() {
                     <hr />
                     <div className="m-2">
                         <div className="m-3 flex flex-col">
-                            <div className="flex justify-between">
+                            <div className="flex flex-col justify-start sm:flex-row sm:justify-between">
                                 <span className="text-2xl font-bold">University of Colorado Boulder</span>
                                 <span className="text-lg italic">Current Student</span>
                             </div>
-                            <div className="flex justify-between">
+                            <div className="flex flex-col justify-start sm:flex-row sm:justify-between">
                                 <span className="text-xl"></span>
                                 <span className="text-lg">Boulder, CO</span>
                             </div>
-                            <div className="flex justify-between">
+                            <div className="flex flex-col justify-start sm:flex-row sm:justify-between">
                                 <span className="text-xl">Computer Science, BS</span>
                                 <span className="text-lg">3.343 GPA</span>
                             </div>
@@ -114,15 +123,15 @@ export default function Resume() {
                     </div>
                     <div className="m-2">
                         <div className="m-3 flex flex-col">
-                            <div className="flex justify-between">
+                            <div className="flex flex-col justify-start sm:flex-row sm:justify-between">
                                 <span className="text-2xl font-bold">Heritage High School</span>
                                 <span className="text-lg">May 2021</span>
                             </div>
-                            <div className="flex justify-between">
+                            <div className="flex flex-col justify-start sm:flex-row sm:justify-between">
                                 <span className="text-xl"></span>
                                 <span className="text-lg">Littleton, CO</span>
                             </div>
-                            <div className="flex justify-between">
+                            <div className="flex flex-col justify-start sm:flex-row sm:justify-between">
                                 <span className="text-xl"></span>
                                 <span className="text-lg">3.862 GPA</span>
                             </div>
@@ -138,36 +147,16 @@ export default function Resume() {
                     <hr />
                     <div className="m-2">
                         <div className="m-3">
-                            <div className="flex justify-between">
-                                <span className="text-2xl font-bold">King Soopers</span>
-                                <span className="text-lg">October 2018 - February 2021</span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span className="text-xl">Customer Service Representative</span>
-                                <span className="text-lg">Littleton, CO</span>
-                            </div>
-                            <span className="text-lg">Relevant Skills:</span>
-                            <ul className="list-disc list-inside text-sm">
-                                <li className="inline mr-1">Active Listening</li>
-                                <li className="inline mr-1">&#8226; Multitasking</li>
-                                <li className="inline mr-1">&#8226; Teamwork</li>
-                                <li className="inline mr-1">&#8226; Interpersonal Relations</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div className="m-2">
-                        <div className="m-3">
-                            <div className="flex justify-between">
+                            <div className="flex flex-col justify-start sm:flex-row sm:justify-between">
                                 <span className="text-2xl font-bold">DUMBCLUB LLC</span>
                                 <span className="text-lg">October 2020 - February 2023</span>
                             </div>
-                            <div className="flex justify-between">
+                            <div className="flex flex-col justify-start sm:flex-row sm:justify-between">
                                 <span className="text-xl">Co-Founder</span>
                                 <span className="text-lg">Littleton, CO</span>
                             </div>
-                            <div className="flex justify-between">
+                            <div className="flex flex-col justify-start sm:flex-row sm:justify-between">
                                 <span className="text-lg">Relevant Skills:</span>
-                                <a href="#" className="text-lg text-gray-400 hover:text-gray-700">Read More &#8227;</a>
                             </div>
                             <ul className="list-disc list-inside text-sm">
                                 <li className="inline mr-1">Adobe Illustrator</li>
@@ -179,21 +168,24 @@ export default function Resume() {
                                 <li className="inline mr-1">&#8226; Bussiness Strategy</li>
                                 <li className="inline mr-1">&#8226; Bussiness Development</li>
                             </ul>
+                            <div className="flex justify-between">
+                                <span className="text-lg"></span>
+                                <a href="#" className="text-lg text-gray-400 hover:text-gray-700">Read More &#8227;</a>
+                            </div>
                         </div>
                     </div>
                     <div className="m-2">
                         <div className="m-3">
-                            <div className="flex justify-between">
+                            <div className="flex flex-col justify-start sm:flex-row sm:justify-between">
                                 <span className="text-2xl font-bold">Nigh Technologies</span>
                                 <span className="text-lg">Fall Semester 2022</span>
                             </div>
-                            <div className="flex justify-between">
+                            <div className="flex flex-col justify-start sm:flex-row sm:justify-between">
                                 <span className="text-xl">Social Media Manager (Internship)</span>
                                 <span className="text-lg">Boulder, CO</span>
                             </div>
-                            <div className="flex justify-between">
+                            <div className="flex justify-start">
                                 <span className="text-lg">Relevant Skills:</span>
-                                <a href="#" className="text-lg text-gray-400 hover:text-gray-700">Read More &#8227;</a>
                             </div>
                             <ul className="list-disc list-inside text-sm">
                                 <li className="inline mr-1">Tech Startups</li>
@@ -203,19 +195,23 @@ export default function Resume() {
                                 <li className="inline mr-1">&#8226; Business Strategy</li>
                                 <li className="inline mr-1">&#8226; Product Development</li>
                             </ul>
+                            <div className="flex justify-between">
+                                <span className="text-lg"></span>
+                                <a href="#" className="text-lg text-gray-400 hover:text-gray-700">Read More &#8227;</a>
+                            </div>
                         </div>
                     </div>
                     <div className="m-2">
                         <div className="m-3">
-                            <div className="flex justify-between">
+                            <div className="flex flex-col justify-start sm:flex-row sm:justify-between">
                                 <span className="text-2xl font-bold">Sciall.org</span>
                                 <span className="text-lg">Spring Semester 2023</span>
                             </div>
-                            <div className="flex justify-between">
+                            <div className="flex flex-col justify-start sm:flex-row sm:justify-between">
                                 <span className="text-xl">Video Editor (Internship)</span>
                                 <span className="text-lg">Remote</span>
                             </div>
-                            <div className="flex justify-between">
+                            <div className="flex flex-col justify-start sm:flex-row sm:justify-between">
                                 <span className="text-lg">Relevant Skills:</span>
                                 <span className="text-lg"></span>
                             </div>
@@ -227,15 +223,15 @@ export default function Resume() {
                     </div>
                     <div className="m-2">
                         <div className="m-3">
-                            <div className="flex justify-between">
+                            <div className="flex flex-col justify-start sm:flex-row sm:justify-between">
                                 <span className="text-2xl font-bold">Arts & Sciences Office of Advancement</span>
                                 <span className="text-lg italic">Currently Working</span>
                             </div>
-                            <div className="flex justify-between">
+                            <div className="flex flex-col justify-start sm:flex-row sm:justify-between">
                                 <span className="text-xl">Student Assistant</span>
                                 <span className="text-lg">Boulder, CO</span>
                             </div>
-                            <div className="flex justify-between">
+                            <div className="flex flex-col justify-start sm:flex-row sm:justify-between">
                                 <span className="text-lg">Relevant Skills:</span>
                                 <span className="text-lg"></span>
                             </div>
@@ -255,11 +251,11 @@ export default function Resume() {
                     <hr />
                     <div className="m-2">
                         <div className="m-3">
-                            <div className="flex justify-between">
+                            <div className="flex flex-col justify-start sm:flex-row sm:justify-between">
                                 <span className="text-2xl font-bold">Royal Family KIDS Camp</span>
                                 <span className="text-lg">52 hrs</span>
                             </div>
-                            <div className="flex justify-between">
+                            <div className="flex flex-col justify-start sm:flex-row sm:justify-between">
                                 <span className="text-xl"></span>
                                 <span className="text-lg">Divide, CO</span>
                             </div>
@@ -272,11 +268,11 @@ export default function Resume() {
                     </div>
                     <div className="m-2">
                         <div className="m-3">
-                            <div className="flex justify-between">
+                            <div className="flex flex-col justify-start sm:flex-row sm:justify-between">
                                 <span className="text-2xl font-bold">Trek</span>
                                 <span className="text-lg">36 hrs</span>
                             </div>
-                            <div className="flex justify-between">
+                            <div className="flex flex-col justify-start sm:flex-row sm:justify-between">
                                 <span className="text-xl"></span>
                                 <span className="text-lg">Rangely, CO</span>
                             </div>

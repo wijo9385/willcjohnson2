@@ -1,4 +1,5 @@
 import { cssBundleHref } from "@remix-run/css-bundle";
+import Footer from "./components/footer";
 import type { V2_MetaFunction, LinksFunction } from "@remix-run/node";
 import {
   Links,
@@ -64,6 +65,7 @@ export default function App() {
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
+        <Footer />
       </body>
     </html>
   );

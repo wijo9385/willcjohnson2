@@ -1,11 +1,20 @@
-import type { V2_MetaFunction } from "@remix-run/node";
+import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
+import { Markdown } from '../components/markdown';
+import { parseMarkdown } from '../markdoc.server';
 
+import Collapsible from 'react-collapsible';
+
+import {
+    useState
+} from 'react';
 
 import {
     Link,
-    useLoaderData
+    useLoaderData,
+    useParams
 } from "@remix-run/react";
+
 
 export const meta: V2_MetaFunction = () => {
     return [
@@ -14,23 +23,25 @@ export const meta: V2_MetaFunction = () => {
     ];
 };
 
-export const loader = async () => {
-    return json({
-      posts: [
-        {
-          slug: "my-first-post",
-          title: "My First Post",
-        },
-        {
-          slug: "90s-mixtape",
-          title: "A Mixtape I Made Just For You",
-        },
-      ],
+export const loader = async ({ params }: LoaderArgs) => {
+    const url = 'http://3.91.184.101/api/posts/' + params.postId + '?populate=*';
+    const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            Authorization: 'bearer a98bc3f7200a30236000fc9a3187a5593658d516f714e7ca57b8f394280cce174462d6de3044374a6e475576c250fa7625614195b0bb1088149a66980d60106eed9228e46ca979b6d212ad3ed32028ab0e0bde4a29e969a88df85a83cd3a6b07f8333c7380520efad6b256a1d6881a1f3cfbffaa555749f9c29938710c19567c'
+        }
     });
-  };
+    const data = await response.json();
+    data.data.attributes.body = parseMarkdown(data.data.attributes.body)
 
-export default function Posts() {
-    const { posts } = useLoaderData<typeof loader>();
+    return json({ post: data });
+};
+
+export default function Post() {
+    const [open, setOpen] = useState(false);
+    const params = useParams();
+    const { post } = useLoaderData<typeof loader>();
+    const { title, body, publishedAt, author, thumbnail } = post.data.attributes;
     return (
         <>
             <div className="hidden sm:flex fixed left-0 top-0 h-screen flex flex-col justify-center">
@@ -50,12 +61,12 @@ export default function Posts() {
                     </svg>
                 </a>
             </div>
-            <div className="flex flex-col h-screen">
+            <div className="flex flex-col">
                 <nav className="flex-none">
                     <div className="mx-auto max-w-5xl px-2 sm:px-6 lg:px-8">
                         <div className="relative flex h-16 items-center justify-between">
                             <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-                                <button type="button" className="inline-flex items-center justify-center rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+                                <button onClick={() => { setOpen(!open) }} type="button" className="inline-flex items-center justify-center rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
                                     <span className="sr-only">Open main menu</span>
                                     <svg className="block h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
@@ -77,24 +88,28 @@ export default function Posts() {
                                     <div className="flex space-x-4">
                                         <Link to="/posts" className="text-gray-700 bg-gray-300 rounded-md px-3 py-2 text-sm font-medium">Blog</Link>
                                         <Link to="/resume" className="text-gray-700 hover:bg-gray-300 rounded-md px-3 py-2 text-sm font-medium">Resume</Link>
-                                        <a href="#" className="text-gray-700 hover:bg-gray-300 rounded-md px-3 py-2 text-sm font-medium">Portfolio</a>
+                                        <Link to="/portfolio" className="text-gray-700 hover:bg-gray-300 rounded-md px-3 py-2 text-sm font-medium">Portfolio</Link>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div className="sm:hidden" id="mobile-menu">
-                        <div className="space-y-1 px-2 pb-3 pt-2">
-                            <Link to="/posts" className="text-gray-700 bg-gray-300 block rounded-md px-3 py-2 text-sm font-medium">Blog</Link>
-                            <Link to="/resume" className="text-gray-700 hover:bg-gray-300 block rounded-md px-3 py-2 text-sm font-medium">Resume</Link>
-                            <a href="#" className="text-gray-700 hover:bg-gray-300 block rounded-md px-3 py-2 text-sm font-medium">Portfolio</a>
+                    <Collapsible trigger="" open={open}>
+                        <div className="sm:hidden" id="mobile-menu">
+                            <div className="space-y-1 px-2 pb-3 pt-2">
+                                <Link to="/posts" className="text-gray-700 hover:bg-gray-300 rounded-md px-3 py-2 text-sm font-medium">Blog</Link>
+                                <Link to="/resume" className="text-gray-700 hover:bg-gray-300 block rounded-md px-3 py-2 text-sm font-medium">Resume</Link>
+                                <Link to="/portfolio" className="text-gray-700 hover:bg-gray-300 block rounded-md px-3 py-2 text-sm font-medium">Portfolio</Link>
+                            </div>
                         </div>
-                    </div>
+                    </Collapsible>
                 </nav>
-                <div className="flex-1 flex flex-col justify-center">
-                    <div className="flex flex-col text-center">
-                        <span className="text-5xl font-black">Will C. Johnson</span>
-                        <span className="text-xl font-medium tracking-widest">Problem Solver</span>
+                <div className="flex justify-center p-3 sm:p-0">
+                    <div className="max-w-2xl mt-10 flex flex-col">
+                        <span className="font-black text-5xl">{title}</span>
+                        <span className="font-light text-gray-700 mb-5">Published on {publishedAt} by {author}</span>
+                        <img className="mb-3" src={thumbnail.data.attributes.formats.medium.url} />
+                        <Markdown content={body} />
                     </div>
                 </div>
             </div>
